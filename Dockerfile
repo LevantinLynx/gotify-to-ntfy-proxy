@@ -1,4 +1,4 @@
-FROM node:lts-alpine3.20 as builder
+FROM node:18-alpine3.19 as builder
 
 USER node
 RUN mkdir -p /home/node/app
@@ -16,7 +16,7 @@ RUN yarn --production --frozen-lockfile
 RUN yarn cache clean
 
 
-FROM node:lts-alpine3.20 as final
+FROM node:18-alpine3.19 as final
 
 USER node
 RUN mkdir -p /home/node/app

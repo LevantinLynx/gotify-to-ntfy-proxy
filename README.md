@@ -58,6 +58,9 @@ yarn start
 ```
 
 ## Docker
+
+Docker image was downgraded in v1.1.0 to node v18 to be able to support arm/v7 and arm/v6 too.
+
 ```bash
 docker run \
   -p 8008:8008 \
