@@ -1,4 +1,4 @@
-# Gotify to Ntfy Relay Proxy
+# Gotify to Ntfy Proxy
 This is intended to be used with Proxmox v8+ to get Ntfy integration with the "new" notification system. At time of writing there is no native Ntfy integration in Proxmox.
 
 ## Proxmox settings
@@ -13,6 +13,9 @@ The proxy also works with Proxmox Backup Server since it uses the same notificat
 
 
 ## Example .env file
+
+The protocol part of the NTFY_SEVER variable is mandatory.
+
 ```env
 NODE_ENV=production
 
@@ -59,7 +62,7 @@ yarn start
 
 ## Docker
 
-Docker image was downgraded in v1.1.0 to node v18 to be able to support arm/v7 and arm/v6 too.
+IMPORTANT: If you are using docker container names to route between containers make sure you still use the protocol "http://" in front of the container name. Otherwise it wont work. e.g. NTFY_SERVER=http://ntfy_container_name
 
 ```bash
 docker run \
