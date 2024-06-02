@@ -1,4 +1,4 @@
-FROM node:18-alpine3.19 as builder
+FROM node:20-bookworm as builder
 
 USER node
 RUN mkdir -p /home/node/app
@@ -15,8 +15,7 @@ ENV NODE_ENV=production
 RUN yarn --production --frozen-lockfile
 RUN yarn cache clean
 
-
-FROM node:18-alpine3.19 as final
+FROM node:20-alpine as final
 
 USER node
 RUN mkdir -p /home/node/app
