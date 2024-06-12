@@ -1,10 +1,11 @@
 # Gotify to Ntfy Proxy
+
 This is intended to be used with Proxmox v8+ to get Ntfy integration with the "new" notification system. At time of writing there is no native Ntfy integration in Proxmox.
 
 ## Proxmox settings
 Go to Datacenter > Notifications > Add > Gotify
 
-In this example the proxy is running on "http://10.0.0.6:8008" topic on Ntfy is "your_topic_name" and the notify token is "tk_yoursupersecretntfytoken".
+In this example the proxy is running on "http://10.0.0.6:8008" topic on Ntfy is "your_topic_name" and the ntfy token is "tk_yoursupersecretntfytoken".
 
 <img src="imgs/gotify-to-ntfy-proxy-1.png" alt="How to add Gotiy to Ntfy Proxy in Proxmox" width="633" style="max-width:100%;">
 
@@ -88,7 +89,7 @@ services:
     environment:
       - RELAY_HOST_IP=0.0.0.0
       - RELAY_PORT=8008
-      - NTFY_SERVER=https://notify.sh
+      - NTFY_SERVER=https://ntfy.sh
 
 ```
 
@@ -100,3 +101,7 @@ RELAY_HOST_IP=0.0.0.0
 RELAY_PORT=8008
 NTFY_SERVER=https://ntfy.sh
 ```
+
+# Credits
+
+Thank you to all the contributers of [Gotify](https://github.com/gotify/server) and [Ntfy](https://github.com/binwiederhier/ntfy) for creating and maintaining such amazing and usefull software.
