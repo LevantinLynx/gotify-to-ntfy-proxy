@@ -1,3 +1,5 @@
+<img src="imgs/logo.svg" alt="How to add Gotiy to Ntfy Proxy in Proxmox" width="220" style="max-width:100%;">
+
 # Gotify to Ntfy Proxy
 
 This is intended to be used with Proxmox v8+ to get Ntfy integration with the "new" notification system. At time of writing there is no native Ntfy integration in Proxmox.
@@ -105,3 +107,11 @@ NTFY_SERVER=https://ntfy.sh
 # Credits
 
 Thank you to all the contributers of [Gotify](https://github.com/gotify/server) and [Ntfy](https://github.com/binwiederhier/ntfy) for creating and maintaining such amazing and usefull software.
+
+# Logo
+
+The gotify-to-ntfy-proxy logo is licensed under the [Creative Commons Attribution 4.0 International Public License](http://creativecommons.org/licenses/by/4.0/).
+
+### Gotify
+
+The Gotify logo is licensed under the [Creative Commons Attribution 4.0 International Public License](http://creativecommons.org/licenses/by/4.0/). The original Go gopher was designed by Renee French (http://reneefrench.blogspot.com/).
