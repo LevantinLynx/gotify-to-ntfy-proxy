@@ -1,21 +1,23 @@
-FROM node:20-bookworm as builder
+FROM node:22-bookworm AS builder
 
 USER node
 RUN mkdir -p /home/node/app
-
 WORKDIR /home/node/app
 
-COPY --chown=node ./ntfy.js /home/node/app
-COPY --chown=node ./index.js /home/node/app
-COPY --chown=node ./package.json /home/node/app
-COPY --chown=node ./yarn.lock /home/node/app
+COPY --chown=node ./ntfy.js .
+COPY --chown=node ./index.js .
+COPY --chown=node ./package.json .
+COPY --chown=node ./yarn.lock .
 
 ENV NODE_ENV=production
 
-RUN yarn --production --frozen-lockfile
-RUN yarn cache clean
+RUN --mount=type=cache,target=/usr/local/share/.cache yarn --production --frozen-lockfile
 
-FROM node:20-alpine as final
+
+
+FROM node:22-alpine AS final
+
+RUN apk --purge del apk-tools
 
 USER node
 RUN mkdir -p /home/node/app
@@ -26,8 +28,8 @@ COPY --from=builder --chown=node /home/node/app/index.js .
 COPY --from=builder --chown=node /home/node/app/ntfy.js .
 COPY --from=builder --chown=node /home/node/app/package.json .
 
-COPY --chown=node ./README.md /home/node/app
-COPY --chown=node ./LICENCE.md /home/node/app
+COPY --chown=node ./README.md .
+COPY --chown=node ./LICENCE.md .
 
 ENV NODE_ENV=production
 
