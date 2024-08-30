@@ -1,12 +1,7 @@
 require('dotenv').config()
 process.env.RELAY_PORT ??= 8008
 process.env.RELAY_HOST_IP ??= '127.0.0.1'
-const topics = require('./topics.js')
 
-const express = require('express')
-const multer = require('multer')
-const bodyParser = require('body-parser')
-const { sendNotificationToNtfyServer } = require('./ntfy.js')
 const { mainStory, config } = require('storyboard')
 if (process.env.NODE_ENV === 'dev') {
   config({ filter: '*:DEBUG' })
@@ -16,6 +11,13 @@ if (process.env.NODE_ENV === 'dev') {
   mainStory.info('ENVIRONMENT', 'Running in PRODUCTION mode!')
 }
 require('storyboard-preset-console')
+
+const { sendNotificationToNtfyServer } = require('./ntfy.js')
+
+const topics = require('./topics.js')
+const express = require('express')
+const multer = require('multer')
+const bodyParser = require('body-parser')
 
 const app = express()
 const upload = multer()

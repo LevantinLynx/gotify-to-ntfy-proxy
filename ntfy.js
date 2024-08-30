@@ -3,6 +3,15 @@ require('storyboard-preset-console')
 const axios = require('axios')
 process.env.NTFY_SERVER ??= 'https://ntfy.sh'
 
+if (
+  process.env.NTFY_SERVER.indexOf('https://') !== 0 &&
+  process.env.NTFY_SERVER.indexOf('http://') !== 0
+) {
+  const errorMsg = `The protocol is missing or incorrect. Check your NTFY_SERVER variable! It is set to "${process.env.NTFY_SERVER}".`
+  mainStory.error('CONFIG', errorMsg)
+  process.exit(1)
+}
+
 /**
  * Send a notification to a Ntfy server
  * @param {Object} notification
