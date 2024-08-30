@@ -14,7 +14,18 @@ require('storyboard-preset-console')
 
 const { sendNotificationToNtfyServer } = require('./ntfy.js')
 
-const topics = require('./topics.js')
+let topics = null
+try {
+  topics = require('./topics.js')
+} catch (err) {
+  if (err.message?.indexOf("Cannot find module './topics.js'") > -1) {
+    mainStory.error('CONFIG', 'File "topics.js" does not exists or is not passed correctly to the docker container.')
+  } else {
+    mainStory.error('CONFIG', 'Error while loading "topics.js"')
+    mainStory.error('CONFIG', err.message)
+  }
+  process.exit(1)
+}
 const express = require('express')
 const multer = require('multer')
 const bodyParser = require('body-parser')
