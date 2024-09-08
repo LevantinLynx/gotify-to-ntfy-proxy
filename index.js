@@ -85,6 +85,45 @@ app.post('/message', upload.none(), bodyParser.json(), async (req, res) => {
   }
   req.body.message = req.body.message.replace(/```\n+/, '').replace(/\n+```/, '')
 
+  // Workaround for iOS not having attatchment support limitation of ntfy
+  // splitting the content into multiple chunks of 4K strings or less
+  // reverse chunks and send notifications so it is in correct order for reading
+  if (process.env.SPLIT_LARGE_MESSAGES && Buffer.byteLength(req.body.message) > 4096) {
+    // chunking in 4000 Byte increments to leave room for long strings/ids
+    // this should avoid the automatic attatchment conversion from ntfy
+    const messageParts = chunkStringByByteLength(req.body.message, 4000).reverse()
+
+    mainStory.info('DEBUG', 'Message parts:', {
+      attach: messageParts,
+      attachLevel: 'info'
+    })
+
+    let msg = null
+    for (let i = 0; i < messageParts.length; i++) {
+      const notification = {
+        topic: token.split('/')[0],
+        title: `${req.body.title} PART ${messageParts.length - i}/${messageParts.length}`,
+        content: messageParts[i],
+        priority: priority[req.body.priority - 1 || 3] || 'default',
+        token: ntfyToken
+      }
+      msg = await sendNotificationToNtfyServer(notification)
+      // delay over 1000 ms between msgs to ensure delivery order in app
+      await delay(1050)
+    }
+
+    res.json({
+      id: msg.id,
+      appid: 1,
+      message: req.body.message,
+      title: req.body.title,
+      priority: req.body.priority,
+      date: new Date().toISOString()
+    })
+
+    return
+  }
+
   const notification = {
     topic: token.split('/')[0],
     title: req.body.title,
@@ -107,3 +146,32 @@ app.post('/message', upload.none(), bodyParser.json(), async (req, res) => {
 app.listen(process.env.RELAY_PORT, process.env.RELAY_HOST_IP, () => {
   mainStory.info('SERVER', `Relay Server is listening on http://${process.env.RELAY_HOST_IP || '127.0.0.1'}:${process.env.RELAY_PORT || 8008}`)
 })
+
+/**
+ * Converts a string into array of strings if maximum Byte length or less
+ * @param {String} string String to be split up into multiple parts
+ * @param {Number} maxBytes Integer Byte size -1 of maximum chunk size in Bytes to split the sting provided
+ * @returns {String[]} Array of stings with max chunk size in Bytes +1 or less
+ */
+function chunkStringByByteLength (string, maxBytes) {
+  let buffer = Buffer.from(string)
+  const chunks = []
+  while (buffer.length) {
+    // Find last index of a space up to max Bytes +1
+    let i = buffer.lastIndexOf(32, maxBytes + 1)
+    // Search for space up to max Bytes
+    if (i === -1) i = buffer.indexOf(32, maxBytes)
+    // Use whole string if no space is found
+    if (i === -1) i = buffer.length
+    // Never cut half-way a multi-byte character
+    chunks.push(buffer.slice(0, i).toString())
+    buffer = buffer.slice(i + 1) // Skip space (if any)
+  }
+  return chunks
+}
+
+function delay (ms) {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(), ms)
+  })
+}

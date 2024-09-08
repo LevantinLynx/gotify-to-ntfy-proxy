@@ -26,6 +26,10 @@ RELAY_HOST_IP=0.0.0.0
 RELAY_PORT=8008
 
 NTFY_SERVER=https://ntfy.sh
+
+# This is a workaround option for iOS users due to no attatchment support on iOS
+# set this to any value to enable message splitting
+SPLIT_LARGE_MESSAGES=
 ```
 
 ## Example topic.js file
@@ -103,6 +107,12 @@ RELAY_HOST_IP=0.0.0.0
 RELAY_PORT=8008
 NTFY_SERVER=https://ntfy.sh
 ```
+
+## iOS workaround for long messages
+
+The iOS/Adroid notification system has a limit on content length of about 4K. Ntfy will convert long messages to an attatchment automatically. This is no problem for Android users, but the iOS App does not support attatchments at the moment. The environment variable `SPLIT_LARGE_MESSAGES` can be set to any value to enable message splitting. If enabled, the message will be chunked and send in 1 second interval to provide correct order and readability for long logs. The split message titles will be appended with `PART #/#`.
+
+---
 
 # Credits
 
