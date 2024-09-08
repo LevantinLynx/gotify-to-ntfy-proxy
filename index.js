@@ -83,6 +83,7 @@ app.post('/message', upload.none(), bodyParser.json(), async (req, res) => {
     })
     return res.json(error).status(400)
   }
+  req.body.message = req.body.message.replace(/```\n+/, '').replace(/\n+```/, '')
 
   const notification = {
     topic: token.split('/')[0],
