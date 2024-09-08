@@ -1,4 +1,4 @@
-FROM node:22.6.0-bookworm AS builder
+FROM node:22.6.0-alpine AS builder
 
 USER node
 RUN mkdir -p /home/node/app
