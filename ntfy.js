@@ -38,6 +38,13 @@ async function sendNotificationToNtfyServer (notification) {
       data: notification.content
     }
     if (notification.token) options.headers.Authorization = `Bearer ${notification.token}`
+    if (notification.title.indexOf('failed') > -1) {
+      options.headers.Tags = 'red_circle'
+      options.headers.Priority = 5
+    } else if (notification.title.indexOf('successful') > -1) {
+      options.headers.Tags = 'green_circle'
+      options.headers.Priority = 3
+    }
 
     const result = await axios(options)
     if (result.data) {
