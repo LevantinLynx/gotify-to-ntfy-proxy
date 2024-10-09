@@ -83,7 +83,6 @@ docker run \
 Optionally you can also pass the environment variables instead of using the .env file or use docker compose.
 
 ```docker
-version: '3.9'
 services:
   gotify-to-ntfy-proxy:
     image: 'levantinlynx/gotify-to-ntfy-proxy:latest'
@@ -96,6 +95,9 @@ services:
       - RELAY_HOST_IP=0.0.0.0
       - RELAY_PORT=8008
       - NTFY_SERVER=https://ntfy.sh
+      # This is a workaround option for iOS users due to no attatchment support on iOS
+      # set this to any value to enable message splitting, remove it to disable
+      - SPLIT_LARGE_MESSAGES=
 
 ```
 
