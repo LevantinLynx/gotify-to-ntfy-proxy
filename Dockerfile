@@ -1,4 +1,4 @@
-FROM node:22.6.0-bookworm AS builder
+FROM node:22.9.0-bookworm AS builder
 
 USER node
 RUN mkdir -p /home/node/app
@@ -15,7 +15,7 @@ RUN --mount=type=cache,target=/usr/local/share/.cache yarn --production --frozen
 
 
 
-FROM node:22.6.0-alpine AS final
+FROM node:22.9.0-alpine AS final
 
 RUN apk --purge del apk-tools
 
