@@ -1,6 +1,6 @@
 const topics = {
   your_topic_name: {
-    ntfy_token: 'tk_yoursupersecretntfytoken'
+    ntfyToken: 'tk_yoursupersecretntfytoken'
   }
 }
 
