@@ -98,7 +98,6 @@ services:
       # This is a workaround option for iOS users due to no attatchment support on iOS
       # set this to any value to enable message splitting, remove it to disable
       - SPLIT_LARGE_MESSAGES=
-
 ```
 
 If no environment file or variables are provided, the service will start with the following default values:

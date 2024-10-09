@@ -1,6 +1,6 @@
 {
   "name": "gotify-to-ntfy-proxy",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "license": "MIT",
   "scripts": {
     "start": "node index.js",
