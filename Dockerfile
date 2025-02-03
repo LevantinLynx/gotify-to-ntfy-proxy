@@ -1,38 +1,40 @@
-FROM node:22.9.0-bookworm AS builder
+FROM oven/bun:1-alpine AS builder
 
-USER node
-RUN mkdir -p /home/node/app
+RUN mkdir -p /home/node/app && chown bun:bun /home/node/app
+
+USER bun
 WORKDIR /home/node/app
 
 COPY --chown=node ./ntfy.js .
 COPY --chown=node ./index.js .
 COPY --chown=node ./package.json .
-COPY --chown=node ./yarn.lock .
+COPY --chown=node ./bun.lock .
 
 ENV NODE_ENV=production
 
-RUN --mount=type=cache,target=/usr/local/share/.cache yarn --production --frozen-lockfile
+RUN --mount=type=cache,target=/usr/local/share/.cache bun install --production --frozen-lockfile
 
 
 
-FROM node:22.9.0-alpine AS final
+FROM oven/bun:1-alpine AS final
 
 RUN apk --purge del apk-tools
 
-USER node
-RUN mkdir -p /home/node/app
+RUN mkdir -p /home/node/app && chown bun:bun /home/node/app
+
+USER bun
 WORKDIR /home/node/app
-
-COPY --from=builder --chown=node /home/node/app/node_modules ./node_modules
-COPY --from=builder --chown=node /home/node/app/index.js .
-COPY --from=builder --chown=node /home/node/app/ntfy.js .
-COPY --from=builder --chown=node /home/node/app/package.json .
-
-COPY --chown=node ./README.md .
-COPY --chown=node ./LICENCE.md .
 
 ENV NODE_ENV=production
 
+COPY --chown=bun ./README.md .
+COPY --chown=bun ./LICENCE.md .
+
+COPY --from=builder --chown=bun /home/node/app/package.json .
+COPY --from=builder --chown=bun /home/node/app/ntfy.js .
+COPY --from=builder --chown=bun /home/node/app/index.js .
+COPY --from=builder --chown=bun /home/node/app/node_modules ./node_modules
+
 EXPOSE 8008
 
-CMD ["yarn", "start"]
+CMD ["bun", "start"]

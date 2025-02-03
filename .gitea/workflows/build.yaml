@@ -23,7 +23,7 @@ jobs:
         name: Login to Docker Registry
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERREGISTRY_USERNAME }}
+          username: ${{ vars.DOCKERREGISTRY_USERNAME }}
           password: ${{ secrets.DOCKERREGISTRY_PASSWORD }}
       -
         name: Get npm package version for release tag
@@ -46,4 +46,4 @@ jobs:
             -H "Title: Container Build ${{ job.status }}" \
             -H "Content-Type: text/plain" \
             -d $'Repo: ${{ github.repository }}\nCommit: ${{ github.sha }}\nRef: ${{ github.ref }}\nStatus: ${{ job.status }}' \
-            ${{ secrets.NTFY_URL }}
+            ${{ vars.NTFY_URL }}
