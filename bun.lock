@@ -4,17 +4,17 @@
     "": {
       "name": "gotify-to-ntfy-proxy",
       "dependencies": {
-        "axios": "latest",
-        "body-parser": "latest",
-        "dotenv": "latest",
-        "express": "latest",
-        "multer": "latest",
-        "storyboard": "latest",
-        "storyboard-preset-console": "latest",
+        "axios": "^1.8.3",
+        "body-parser": "^1.20.3",
+        "dotenv": "^16.4.7",
+        "express": "^4.21.2",
+        "multer": "^1.4.5-lts.1",
+        "storyboard": "^3.3.2",
+        "storyboard-preset-console": "^3.3.2",
       },
       "devDependencies": {
-        "snazzy": "latest",
-        "standard": "latest",
+        "snazzy": "^9.0.0",
+        "standard": "^17.1.2",
       },
     },
   },
@@ -85,7 +85,7 @@
 
     "available-typed-arrays": ["available-typed-arrays@1.0.7", "", { "dependencies": { "possible-typed-array-names": "^1.0.0" } }, "sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ=="],
 
-    "axios": ["axios@1.7.9", "", { "dependencies": { "follow-redirects": "^1.15.6", "form-data": "^4.0.0", "proxy-from-env": "^1.1.0" } }, "sha512-LhLcE7Hbiryz8oMDdDptSrWowmB4Bl6RCt6sIJKpRB4XtVf0iEgewX3au/pJqm+Py1kCASkb/FFKjxQaLtxJvw=="],
+    "axios": ["axios@1.8.3", "", { "dependencies": { "follow-redirects": "^1.15.6", "form-data": "^4.0.0", "proxy-from-env": "^1.1.0" } }, "sha512-iP4DebzoNlP/YN2dpwCgb8zoCmhtkajzS48JvwmkSkXvPI3DHc7m+XYL5tGnSlJtR6nImXZmdCuN5aP8dh1d8A=="],
 
     "balanced-match": ["balanced-match@1.0.2", "", {}, "sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw=="],
 
