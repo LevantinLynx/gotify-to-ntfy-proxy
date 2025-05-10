@@ -37,7 +37,7 @@ app.use(upload.none())
 app.use(bodyParser.json())
 
 app.post('/message', upload.none(), bodyParser.json(), async (req, res) => {
-  const token = req.query.token || req.headers['x-gotify-key'] || req.headers.authorization ? req.headers.authorization.replace('Bearer ', '') : ''
+  const token = req.query.token || req.headers['x-gotify-key'] || (req.headers.authorization ? req.headers.authorization.replace('Bearer ', '') : '')
 
   mainStory.debug('MESSAGE', 'Gotify message recieved:', {
     attach: { ...req.body, token },
