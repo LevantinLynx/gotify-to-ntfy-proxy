@@ -11,13 +11,14 @@ jobs:
     runs-on: [amd64, docker]
     name: 'Build & push docker image'
     container:
-      image: ghcr.io/catthehacker/ubuntu:act-22.04
-      options: >-
-        --privileged
+      image: docker:latest
+      options: --privileged -v /var/run/docker.sock:/var/run/docker.sock
       env:
-        DOCKER_HOST: "tcp://docker_dind:2375"
         DOCKER_TLS_CERTDIR: ""
     steps:
+      - name: Install Node.js
+        run: |
+          apk add --no-cache nodejs npm
 #      - name: Install docker
 #        run: |
 #          curl -fsSL https://get.docker.com -o get-docker.sh
