@@ -1,0 +1,33 @@
+name: build-push-image
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: [docker-cli]
+    name: 'Build & push docker image'
+    container:
+      image: docker:latest
+      options: --privileged -v /var/run/docker.sock:/var/run/docker.sock
+    steps:
+      - name: Install Node.js
+        run: |
+          apk add --no-cache nodejs npm
+      - uses: actions/checkout@v4
+        name: Checkout
+      - name: Login to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: forge.lucaslemaire.fr/zwo
+          username: zwo
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+      - name: Build and Push
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: forge.lucaslemaire.fr/zwo/gotontfy:latest
+          file: Dockerfile
