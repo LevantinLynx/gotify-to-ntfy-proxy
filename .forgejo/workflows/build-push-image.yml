@@ -19,9 +19,6 @@ jobs:
           apk add --no-cache nodejs npm
       - uses: actions/checkout@v4
         name: Checkout
-      - name: test-docker
-        run: |
-          docker info
       - name: Login to Container Registry
         uses: docker/login-action@v3
         with:
