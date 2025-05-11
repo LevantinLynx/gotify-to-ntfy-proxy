@@ -10,12 +10,13 @@ jobs:
   build:
     runs-on: [amd64, docker]
     container:
-      image: node:20-alpine
+        image: node:20
     name: 'Build & push docker image'
     steps:
       - name: Install docker
         run: |
-          apk add docker
+          curl -fsSL https://get.docker.com -o get-docker.sh
+          sudo sh get-docker.sh
       - uses: actions/checkout@v4
         name: Checkout
       - name: test-docker
