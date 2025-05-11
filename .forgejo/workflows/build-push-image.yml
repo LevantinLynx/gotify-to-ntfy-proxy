@@ -13,8 +13,6 @@ jobs:
     container:
       image: docker:latest
       options: --privileged -v /var/run/docker.sock:/var/run/docker.sock
-      env:
-        DOCKER_TLS_CERTDIR: ""
     steps:
       - name: Install Node.js
         run: |
@@ -25,10 +23,9 @@ jobs:
 #          sh get-docker.sh
       - uses: actions/checkout@v4
         name: Checkout
-#      - name: test-docker
-#        run: |
-#          /usr/bin/docker version
-#          /usr/bin/docker ps
+      - name: test-docker
+        run: |
+          docker info
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: Login to Container Registry
