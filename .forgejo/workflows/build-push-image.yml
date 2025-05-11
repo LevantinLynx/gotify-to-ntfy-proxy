@@ -10,9 +10,12 @@ jobs:
   build:
     runs-on: [amd64, docker]
     container:
-      image: ubuntu:latest
+      image: node:20-alpine
     name: 'Build & push docker image'
     steps:
+      - name: Install docker
+        run: |
+          apk add docker
       - uses: actions/checkout@v4
         name: Checkout
       - name: test-docker
