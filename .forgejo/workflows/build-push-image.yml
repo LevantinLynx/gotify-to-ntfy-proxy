@@ -18,10 +18,10 @@ jobs:
         DOCKER_HOST: "tcp://docker_dind:2375"
         DOCKER_TLS_CERTDIR: ""
     steps:
-      - name: Install docker
-        run: |
-          curl -fsSL https://get.docker.com -o get-docker.sh
-          sh get-docker.sh
+#      - name: Install docker
+#        run: |
+#          curl -fsSL https://get.docker.com -o get-docker.sh
+#          sh get-docker.sh
       - uses: actions/checkout@v4
         name: Checkout
 #      - name: test-docker
