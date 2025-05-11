@@ -10,13 +10,13 @@ jobs:
   build:
     runs-on: [amd64, docker]
     container:
-        image: node:20
+        image: ghcr.io/catthehacker/ubuntu:act-22.04
     name: 'Build & push docker image'
     steps:
-      - name: Install docker
-        run: |
-          curl -fsSL https://get.docker.com -o get-docker.sh
-          sh get-docker.sh
+#     - name: Install docker
+#        run: |
+#          curl -fsSL https://get.docker.com -o get-docker.sh
+#          sh get-docker.sh
       - uses: actions/checkout@v4
         name: Checkout
       - name: test-docker
