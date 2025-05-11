@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: [amd64, docker]
+    runs-on: [docker-cli]
     name: 'Build & push docker image'
     container:
       image: docker:latest
