@@ -15,15 +15,8 @@ jobs:
       options: >-
         --privileged
       env:
-        DOCKER_HOST: "tcp://docker:2375"
+        DOCKER_HOST: "tcp://docker_dind:2375"
         DOCKER_TLS_CERTDIR: ""
-    services:
-      docker:
-        image: docker:24.0.5-dind
-        options: >-
-          --privileged
-        env:
-          DOCKER_TLS_CERTDIR: ""
     steps:
       - name: Install docker
         run: |
