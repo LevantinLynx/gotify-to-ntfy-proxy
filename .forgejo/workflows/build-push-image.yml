@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: [amd64, docker]
     container:
-      image: node:24-bookworm-slim
+      image: node:24-bookworm
     name: 'Build & push docker image'
     steps:
       - uses: actions/checkout@v4
