@@ -10,15 +10,15 @@ jobs:
   build:
     runs-on: [amd64, docker]
     container:
-      image: node:24-bookworm
+      image: ubuntu:latest
     name: 'Build & push docker image'
     steps:
       - uses: actions/checkout@v4
         name: Checkout
       - name: test-docker
         run: |
-          docker version
-          docker ps
+          /usr/bin/docker version
+          /usr/bin/docker ps
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: Login to Container Registry
