@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: [amd64, docker]
     container:
-      image: ubuntu-22.04
+      image: ubuntu:22.04
     name: 'Build & push docker image'
     steps:
       - uses: actions/checkout@v4
