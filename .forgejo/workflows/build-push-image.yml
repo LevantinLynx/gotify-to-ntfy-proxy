@@ -23,7 +23,7 @@ jobs:
         with:
           registry: forge.lucaslemaire.fr/zwo
           username: zwo
-          password: ${{ secrets.FORGEJO_TOKEN }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
       - name: Build and Push
         uses: docker/build-push-action@v6
         with:
