@@ -9,14 +9,26 @@ on:
 jobs:
   build:
     runs-on: [amd64, docker]
-    container:
-        image: ghcr.io/catthehacker/ubuntu:act-22.04
     name: 'Build & push docker image'
+    container:
+      image: ghcr.io/catthehacker/ubuntu:act-22.04
+      options: >-
+        --privileged
+      env:
+        DOCKER_HOST: "tcp://docker:2375"
+        DOCKER_TLS_CERTDIR: ""
+    services:
+      docker:
+        image: docker:24.0.5-dind
+        options: >-
+          --privileged
+        env:
+          DOCKER_TLS_CERTDIR: ""
     steps:
-#     - name: Install docker
-#        run: |
-#          curl -fsSL https://get.docker.com -o get-docker.sh
-#          sh get-docker.sh
+      - name: Install docker
+        run: |
+          curl -fsSL https://get.docker.com -o get-docker.sh
+          sh get-docker.sh
       - uses: actions/checkout@v4
         name: Checkout
 #      - name: test-docker
