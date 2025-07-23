@@ -1,17 +1,17 @@
 {
   "name": "gotify-to-ntfy-proxy",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "license": "MIT",
   "scripts": {
     "start": "bun index.js",
     "test": "standard \"index.js\" \"ntfy.js\" --fix --verbose | snazzy"
   },
   "dependencies": {
-    "axios": "^1.9.0",
+    "axios": "^1.10.0",
     "body-parser": "^2.2.0",
-    "dotenv": "^16.5.0",
+    "dotenv": "^17.2.0",
     "express": "^5.1.0",
-    "multer": "^1.4.5-lts.2",
+    "multer": "^2.0.2",
     "storyboard": "^3.3.2",
     "storyboard-preset-console": "^3.3.2"
   },
