@@ -1,9 +1,9 @@
 require('dotenv').config()
 process.env.RELAY_PORT ??= 8008
-process.env.RELAY_HOST_IP ??= '127.0.0.1'
+process.env.RELAY_HOST_IP ??= '0.0.0.0'
 
 const { mainStory, config } = require('storyboard')
-if (process.env.NODE_ENV === 'dev') {
+if (process.env.NODE_ENV === 'development') {
   config({ filter: '*:DEBUG' })
   mainStory.info('ENVIRONMENT', 'Running in DEVELOPMENT mode!')
 } else {
@@ -144,7 +144,7 @@ app.post('/message', upload.none(), json(), async (req, res) => {
 })
 
 app.listen(process.env.RELAY_PORT, process.env.RELAY_HOST_IP, () => {
-  mainStory.info('SERVER', `Relay Server is listening on http://${process.env.RELAY_HOST_IP || '127.0.0.1'}:${process.env.RELAY_PORT || 8008}`)
+  mainStory.info('SERVER', `Relay Server is listening on http://${process.env.RELAY_HOST_IP || '0.0.0.0'}:${process.env.RELAY_PORT || 8008}`)
 })
 
 /**
