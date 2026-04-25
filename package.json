@@ -1,6 +1,6 @@
 {
   "name": "gotify-to-ntfy-proxy",
-  "version": "1.10.2",
+  "version": "1.11.0",
   "license": "MIT",
   "scripts": {
     "start": "bun index.js",

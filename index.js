@@ -151,21 +151,25 @@ app.listen(process.env.RELAY_PORT, process.env.RELAY_HOST_IP, () => {
  * Converts a string into array of strings if maximum Byte length or less
  * @param {String} string String to be split up into multiple parts
  * @param {Number} maxBytes Integer Byte size -1 of maximum chunk size in Bytes to split the sting provided
- * @returns {String[]} Array of stings with max chunk size in Bytes +1 or less
+ * @returns {String[]} Array of strings with max chunk size in Bytes +1 or less
  */
 function chunkStringByByteLength (string, maxBytes) {
   let buffer = Buffer.from(string)
   const chunks = []
+  // 10 = \n
+  // 13 = \r
+  // 32 = space
+  const splitChar = 10
   while (buffer.length) {
-    // Find last index of a space up to max Bytes +1
-    let i = buffer.lastIndexOf(32, maxBytes + 1)
-    // Search for space up to max Bytes
-    if (i === -1) i = buffer.indexOf(32, maxBytes)
-    // Use whole string if no space is found
+    // Find last index of a splitChar up to max Bytes +1
+    let i = buffer.lastIndexOf(splitChar, maxBytes + 1)
+    // Search for splitChar up to max Bytes
+    if (i === -1) i = buffer.indexOf(splitChar, maxBytes)
+    // Use whole string if no splitChar is found
     if (i === -1) i = buffer.length
     // Never cut half-way a multi-byte character
     chunks.push(buffer.slice(0, i).toString())
-    buffer = buffer.slice(i + 1) // Skip space (if any)
+    buffer = buffer.slice(i + 1) // Skip splitChar (if any)
   }
   return chunks
 }
