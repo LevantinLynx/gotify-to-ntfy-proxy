@@ -91,7 +91,7 @@ app.post('/message', upload.none(), json(), async (req, res) => {
   if (process.env.SPLIT_LARGE_MESSAGES && Buffer.byteLength(req.body.message) > 4096) {
     // chunking in 4000 Byte increments to leave room for long strings/ids
     // this should avoid the automatic attatchment conversion from ntfy
-    const messageParts = chunkStringByByteLength(req.body.message, 4000).reverse()
+    const messageParts = chunkStringByByteLength(req.body.message, 4000, 3700).reverse()
 
     mainStory.info('DEBUG', 'Message parts:', {
       attach: messageParts,
@@ -148,28 +148,36 @@ app.listen(process.env.RELAY_PORT, process.env.RELAY_HOST_IP, () => {
 })
 
 /**
- * Converts a string into array of strings if maximum Byte length or less
+ * Converts a string into array of strings of maximum Byte length or less
+ * The string will be split at new lines "\n" or spaces, if none are found force split at max length
  * @param {String} string String to be split up into multiple parts
- * @param {Number} maxBytes Integer Byte size -1 of maximum chunk size in Bytes to split the sting provided
- * @returns {String[]} Array of strings with max chunk size in Bytes +1 or less
+ * @param {Number} maxBytes Integer Byte size -1 of maximum chunk size in Bytes to split the string provided
+ * @param {Number} minBytes Integer Byte size of minimum chunk size in Bytes to split the string provided
+ * @returns {String[]} Array of strings with max chunk size in Bytes or less
  */
-function chunkStringByByteLength (string, maxBytes) {
-  let buffer = Buffer.from(string)
+function chunkStringByByteLength (string, maxBytes, minBytes) {
   const chunks = []
-  // 10 = \n
-  // 13 = \r
-  // 32 = space
-  const splitChar = 10
-  while (buffer.length) {
-    // Find last index of a splitChar up to max Bytes +1
-    let i = buffer.lastIndexOf(splitChar, maxBytes + 1)
-    // Search for splitChar up to max Bytes
-    if (i === -1) i = buffer.indexOf(splitChar, maxBytes)
-    // Use whole string if no splitChar is found
-    if (i === -1) i = buffer.length
-    // Never cut half-way a multi-byte character
-    chunks.push(buffer.slice(0, i).toString())
-    buffer = buffer.slice(i + 1) // Skip splitChar (if any)
+  while (string.length) {
+    if (string.length <= maxBytes) {
+      chunks.push(string)
+      return chunks
+    } else {
+      let removeSplitChars = true
+      // split at new line if possible
+      let index = string.lastIndexOf('\n', maxBytes)
+      // split at space if no new line was found
+      if (index === -1 || index < minBytes) index = string.lastIndexOf(' ', maxBytes)
+      // force split at maxBytes
+      if (index === -1 || index < minBytes) {
+        removeSplitChars = false
+        index = 0 + maxBytes
+        // avoid multi byte character splits
+        while (string.codePointAt(index) > 0xFFFF) index--
+      }
+      chunks.push(string.slice(0, index))
+      string = string.slice(index)
+      if (removeSplitChars) string = string.slice(1)
+    }
   }
   return chunks
 }
