@@ -1,40 +1,35 @@
 FROM oven/bun:1-alpine AS builder
-
-RUN mkdir -p /home/node/app && chown bun:bun /home/node/app
+ENV NODE_ENV=production
 
 USER bun
-WORKDIR /home/node/app
+WORKDIR /usr/src/app
 
-COPY --chown=node ./ntfy.js .
-COPY --chown=node ./index.js .
-COPY --chown=node ./package.json .
-COPY --chown=node ./bun.lock .
+COPY --chown=bun index.js ntfy.js logger.js package.json bun.lock LICENCE.md ./
 
-ENV NODE_ENV=production
+RUN sed -i "s/##YEAR##/$(date +%Y)/g" ./LICENCE.md
 
 RUN --mount=type=cache,target=/usr/local/share/.cache bun install --production --frozen-lockfile
+RUN bun build \
+  --compile ./index.js \
+  --asset ./ntfy.js \
+  --asset ./logger.js \
+  --asset ./node_modules \
+  --outfile=gotify-to-ntfy-proxy
 
 
-
-FROM oven/bun:1-alpine AS final
-
-RUN apk --purge del apk-tools
-
-RUN mkdir -p /home/node/app && chown bun:bun /home/node/app
-
-USER bun
-WORKDIR /home/node/app
-
+FROM alpine:3 AS final
 ENV NODE_ENV=production
 
-COPY --chown=bun ./README.md .
-COPY --chown=bun ./LICENCE.md .
+RUN apk add --no-cache libstdc++
 
-COPY --from=builder --chown=bun /home/node/app/package.json .
-COPY --from=builder --chown=bun /home/node/app/node_modules ./node_modules
-COPY --from=builder --chown=bun /home/node/app/ntfy.js .
-COPY --from=builder --chown=bun /home/node/app/index.js .
+RUN mkdir -p /home/node/app
+
+WORKDIR /home/node/app
+
+COPY --from=builder /usr/src/app/gotify-to-ntfy-proxy ./gotify-to-ntfy-proxy
+COPY --from=builder /usr/src/app/LICENCE.md ./LICENCE.md
+COPY ./README.md ./
 
 EXPOSE 8008
 
-CMD ["bun", "start"]
+ENTRYPOINT ["/home/node/app/gotify-to-ntfy-proxy"]

@@ -2,6 +2,7 @@ require('dotenv').config()
 process.env.RELAY_PORT ??= 8008
 process.env.RELAY_HOST_IP ??= '0.0.0.0'
 
+const path = require('path')
 const logger = require('./logger.js')
 logger.info('ENVIRONMENT', `Running in ${process.env.NODE_ENV === 'development' ? 'DEVELOPMENT' : 'PRODUCTION'} mode!`)
 
@@ -9,7 +10,7 @@ const { sendNotificationToNtfyServer } = require('./ntfy.js')
 
 let topics = null
 try {
-  topics = require('./topics.js')
+  topics = require(path.join(process.cwd(), 'topics.js'))
 } catch (err) {
   if (err.message?.indexOf("Cannot find module './topics.js'") > -1) {
     logger.error('CONFIG', 'File "topics.js" does not exists or is not passed correctly to the docker container.')
