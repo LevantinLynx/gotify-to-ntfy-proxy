@@ -1,17 +1,17 @@
 {
   "name": "gotify-to-ntfy-proxy",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "license": "MIT",
   "scripts": {
     "dev": "NODE_ENV=development bun index.js",
     "test": "standard \"index.js\" \"ntfy.js\" \"logger.js\" --fix --verbose | snazzy"
   },
   "dependencies": {
-    "axios": "1.13.6",
-    "body-parser": "^2.2.2",
+    "axios": "^1.20.0",
+    "body-parser": "^2.3.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "multer": "^2.1.1"
+    "multer": "^2.3.0"
   },
   "devDependencies": {
     "snazzy": "^9.0.0",
