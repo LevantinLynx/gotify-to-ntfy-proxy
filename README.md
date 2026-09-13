@@ -17,7 +17,7 @@ The proxy also works with Proxmox Backup Server since it uses the same notificat
 
 ## Example .env file
 
-The protocol part of the NTFY_SEVER variable is mandatory.
+The protocol part of the NTFY_SEVER variable is mandatory!
 
 ```env
 NODE_ENV=production
@@ -26,10 +26,6 @@ RELAY_HOST_IP=0.0.0.0
 RELAY_PORT=8008
 
 NTFY_SERVER=https://ntfy.sh
-
-# This is a workaround option for iOS users due to no attatchment support on iOS
-# set this to any value to enable message splitting
-SPLIT_LARGE_MESSAGES=
 ```
 
 ## Example topic.js file
@@ -46,36 +42,30 @@ const topics = {
 module.exports = topics
 ```
 
-## Run local
-
-Ensure node v20+ and yarn 1.22+ are installed
+## Local development container
 
 ```bash
-git clone https://github.com/LevantinLynx/gotify-to-ntfy-proxy.git
+docker build -f Dockerfile-dev -t gotify-to-ntfy-proxy:dev .
 
-cd gotify-to-ntfy-proxy
-
-cp .env.defaut .env
-# Edit .env file
-
-cp topics.defaut.js topics.js
-# Edit tocics.js file
-# MAKE SURE THIS IS SAVE! IT CONTAINS YOUR NTFY TOKEN/S.
-
-yarn install
-
-yarn start
+docker run --rm -it -v $(pwd):/home/node/app \
+  -e TZ=Europe/Berlin \
+  -e NODE_ENV=development \
+  -e RELAY_HOST_IP=0.0.0.0 \
+  -e NTFY_SERVER=https://ntfy.sh \
+  -p 8008:8008 \
+  gotify-to-ntfy-proxy:dev /bin/sh
 ```
 
-## Docker
+## Docker container / deployment
 
 IMPORTANT: If you are using docker container names to route between containers make sure you still use the protocol "http://" in front of the container name. Otherwise it wont work. e.g. NTFY_SERVER=http://ntfy_container_name
 
 ```bash
 docker run \
+  --user "$(id -u):$(id -g)" \ # This will run the process as the current user
   -p 8008:8008 \
-  -v /path/to/your/.env:/home/node/app/.env \
-  -v /path/to/your/topics.js:/home/node/app/topics.js \
+  -v /path/to/your/.env:/home/node/app/.env:ro \
+  -v /path/to/your/topics.js:/home/node/app/topics.js:ro \
   --restart unless-stopped \
   levantinlynx/gotify-to-ntfy-proxy:latest
 ```
@@ -87,17 +77,17 @@ services:
   gotify-to-ntfy-proxy:
     image: 'levantinlynx/gotify-to-ntfy-proxy:latest'
     restart: unless-stopped
+    # Change this to the desired user. (Current user IDs get be found be running "id -u" and "id -g")
+    # No user:group will result in execution as root
+    user: "1000:1000"
     volumes:
-      - '/path/to/your/topics.js:/home/node/app/topics.js'
+      - '/path/to/your/topics.js:/home/node/app/topics.js:ro'
     ports:
       - '8008:8008'
     environment:
       - RELAY_HOST_IP=0.0.0.0
       - RELAY_PORT=8008
       - NTFY_SERVER=https://ntfy.sh
-      # This is a workaround option for iOS users due to no attatchment support on iOS
-      # set this to any value to enable message splitting, remove it to disable
-      - SPLIT_LARGE_MESSAGES=
 ```
 
 If no environment file or variables are provided, the service will start with the following default values:
@@ -109,9 +99,9 @@ RELAY_PORT=8008
 NTFY_SERVER=https://ntfy.sh
 ```
 
-## iOS workaround for long messages
+## ntfy for iOS now supports attachments
 
-The iOS/Adroid notification system has a limit on content length of about 4K. Ntfy will convert long messages to an attatchment automatically. This is no problem for Android users, but the iOS App does not support attatchments at the moment. The environment variable `SPLIT_LARGE_MESSAGES` can be set to any value to enable message splitting. If enabled, the message will be chunked and send in 1 second interval to provide correct order and readability for long logs. The split message titles will be appended with `PART #/#`.
+Long notification text will be converted into a txt attachment. (This is ntfy server behaviour.)
 
 ---
 

@@ -1,6 +1,6 @@
 {
   "name": "gotify-to-ntfy-proxy",
-  "version": "1.12.0",
+  "version": "2.0.0",
   "license": "MIT",
   "scripts": {
     "dev": "NODE_ENV=development bun index.js",
