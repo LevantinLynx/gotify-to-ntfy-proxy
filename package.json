@@ -11,9 +11,7 @@
     "body-parser": "^2.2.2",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "multer": "^2.1.1",
-    "storyboard": "^3.3.2",
-    "storyboard-preset-console": "^3.3.2"
+    "multer": "^2.1.1"
   },
   "devDependencies": {
     "snazzy": "^9.0.0",

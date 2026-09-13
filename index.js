@@ -2,15 +2,8 @@ require('dotenv').config()
 process.env.RELAY_PORT ??= 8008
 process.env.RELAY_HOST_IP ??= '0.0.0.0'
 
-const { mainStory, config } = require('storyboard')
-if (process.env.NODE_ENV === 'development') {
-  config({ filter: '*:DEBUG' })
-  mainStory.info('ENVIRONMENT', 'Running in DEVELOPMENT mode!')
-} else {
-  config({ filter: '*:INFO' })
-  mainStory.info('ENVIRONMENT', 'Running in PRODUCTION mode!')
-}
-require('storyboard-preset-console')
+const logger = require('./logger.js')
+logger.info('ENVIRONMENT', `Running in ${process.env.NODE_ENV === 'development' ? 'DEVELOPMENT' : 'PRODUCTION'} mode!`)
 
 const { sendNotificationToNtfyServer } = require('./ntfy.js')
 
@@ -19,10 +12,10 @@ try {
   topics = require('./topics.js')
 } catch (err) {
   if (err.message?.indexOf("Cannot find module './topics.js'") > -1) {
-    mainStory.error('CONFIG', 'File "topics.js" does not exists or is not passed correctly to the docker container.')
+    logger.error('CONFIG', 'File "topics.js" does not exists or is not passed correctly to the docker container.')
   } else {
-    mainStory.error('CONFIG', 'Error while loading "topics.js"')
-    mainStory.error('CONFIG', err.message)
+    logger.error('CONFIG', 'Error while loading "topics.js"')
+    logger.error('CONFIG', err.message)
   }
   process.exit(1)
 }
@@ -39,10 +32,7 @@ app.use(json())
 app.post('/message', upload.none(), json(), async (req, res) => {
   const token = req.query.token || req.headers['x-gotify-key'] || (req.headers.authorization ? req.headers.authorization.replace('Bearer ', '') : '')
 
-  mainStory.debug('MESSAGE', 'Gotify message recieved:', {
-    attach: { ...req.body, token },
-    attachLevel: 'debug'
-  })
+  logger.debug('MESSAGE', 'Gotify message recieved:', { ...req.body, token })
 
   const priority = ['min', 'low', 'default', 'high', 'max']
   const topic = token.split('/')[0]
@@ -53,10 +43,7 @@ app.post('/message', upload.none(), json(), async (req, res) => {
       errorCode: 400,
       errorDescription: 'No matching topic found! Please ensure the topic is defined in topic.js and provide a token formated: topic/ntfyToken'
     }
-    mainStory.error('NOTIFICATION', error.error, {
-      attach: error,
-      attachLevel: 'error'
-    })
+    logger.error('NOTIFICATION', error)
     return res.json(error).status(400)
   }
   if (topics[topic].ntfyToken !== ntfyToken) {
@@ -65,10 +52,7 @@ app.post('/message', upload.none(), json(), async (req, res) => {
       errorCode: 401,
       errorDescription: 'Please provide a token formated: topic/ntfyToken'
     }
-    mainStory.error('NOTIFICATION', error.error, {
-      attach: error,
-      attachLevel: 'error'
-    })
+    logger.error('NOTIFICATION', error)
     return res.json(error).status(401)
   }
   if (!req.body.message) {
@@ -77,10 +61,7 @@ app.post('/message', upload.none(), json(), async (req, res) => {
       errorCode: 400,
       errorDescription: 'Please provide a message.'
     }
-    mainStory.error('NOTIFICATION', error.error, {
-      attach: error,
-      attachLevel: 'error'
-    })
+    logger.error('NOTIFICATION', error)
     return res.json(error).status(400)
   }
   req.body.message = req.body.message.replace(/```\n+/, '').replace(/\n+```/, '')
@@ -93,10 +74,7 @@ app.post('/message', upload.none(), json(), async (req, res) => {
     // this should avoid the automatic attatchment conversion from ntfy
     const messageParts = chunkStringByByteLength(req.body.message, 4000, 3700).reverse()
 
-    mainStory.info('DEBUG', 'Message parts:', {
-      attach: messageParts,
-      attachLevel: 'info'
-    })
+    logger.info('DEBUG', 'Message parts:', messageParts)
 
     let msg = null
     for (let i = 0; i < messageParts.length; i++) {
@@ -144,7 +122,7 @@ app.post('/message', upload.none(), json(), async (req, res) => {
 })
 
 app.listen(process.env.RELAY_PORT, process.env.RELAY_HOST_IP, () => {
-  mainStory.info('SERVER', `Relay Server is listening on http://${process.env.RELAY_HOST_IP || '0.0.0.0'}:${process.env.RELAY_PORT || 8008}`)
+  logger.info('SERVER', `Relay Server is listening on http://${process.env.RELAY_HOST_IP || '0.0.0.0'}:${process.env.RELAY_PORT || 8008}`)
 })
 
 /**

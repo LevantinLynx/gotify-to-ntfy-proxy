@@ -1,5 +1,4 @@
-const { mainStory } = require('storyboard')
-require('storyboard-preset-console')
+const logger = require('./logger.js')
 const axios = require('axios')
 process.env.NTFY_SERVER ??= 'https://ntfy.sh'
 
@@ -8,7 +7,7 @@ if (
   process.env.NTFY_SERVER.indexOf('http://') !== 0
 ) {
   const errorMsg = `The protocol is missing or incorrect. Check your NTFY_SERVER variable! It is set to "${process.env.NTFY_SERVER}".`
-  mainStory.error('CONFIG', errorMsg)
+  logger.error('CONFIG', errorMsg)
   process.exit(1)
 }
 
@@ -48,17 +47,11 @@ async function sendNotificationToNtfyServer (notification) {
 
     const result = await axios(options)
     if (result.data) {
-      mainStory.info('NTFY', `Sent to "${process.env.NTFY_SERVER}/${notification.topic}":`, {
-        attach: result.data,
-        attachLevel: 'info'
-      })
+      logger.info('NTFY', `Sent to "${process.env.NTFY_SERVER}/${notification.topic}":`, result.data)
       return result.data
     }
   } catch (err) {
-    mainStory.error('NTFY', err.message, {
-      attach: err,
-      attachLevel: 'error'
-    })
+    logger.error('NTFY', err.message, err)
   }
 }
 
