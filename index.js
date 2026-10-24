@@ -7,6 +7,7 @@ const logger = require('./logger.js')
 logger.info('ENVIRONMENT', `Running in ${process.env.NODE_ENV === 'development' ? 'DEVELOPMENT' : 'PRODUCTION'} mode!`)
 
 const { sendNotificationToNtfyServer } = require('./ntfy.js')
+const { timingSafeEqual } = require('node:crypto')
 
 let topics = null
 try {
@@ -47,7 +48,7 @@ app.post('/message', upload.none(), json(), async (req, res) => {
     logger.error('NOTIFICATION', error)
     return res.json(error).status(400)
   }
-  if (topics[topic].ntfyToken !== ntfyToken) {
+  if (!timingSafeTokenCompare(topics[topic].ntfyToken, ntfyToken)) {
     const error = {
       error: 'Unauthorized',
       errorCode: 401,
@@ -89,3 +90,10 @@ app.post('/message', upload.none(), json(), async (req, res) => {
 app.listen(process.env.RELAY_PORT, process.env.RELAY_HOST_IP, () => {
   logger.info('SERVER', `Relay Server is listening on http://${process.env.RELAY_HOST_IP || '0.0.0.0'}:${process.env.RELAY_PORT || 8008}`)
 })
+
+function timingSafeTokenCompare (a, b) {
+  if (typeof a !== 'string' || typeof b !== 'string') return false
+  const bufA = Buffer.from(a, 'utf8')
+  const bufB = Buffer.from(b, 'utf8')
+  return bufA.length === bufB.length && timingSafeEqual(bufA, bufB)
+}
